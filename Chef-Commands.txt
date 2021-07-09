@@ -1,0 +1,36 @@
+Tomcat 
+
+knife ec2 server create --image ami-04bde106886a53080 --flavor t2.micro --region ap-south-1 --ssh-user ubuntu --ssh-key chef-server -i /home/ubuntu/chef-server.pem --subnet subnet-2fe3a263  --node-name chef-deploy  -Z ap-south-1b -g sg-7bc1f21d -g sg-0ee1f53f1092ebd58 --associate-public-ip --run-list 'recipe[apt],recipe[tomcat]' --sudo --node-ssl-verify-mode none
+
+
+Test_cookbook
+
+knife ec2 server create --image ami-04bde106886a53080 --flavor t2.micro --region ap-south-1 --ssh-user ubuntu --ssh-key chef-server -i /home/ubuntu/chef-server.pem --subnet subnet-2fe3a263  --node-name chef1  -Z ap-south-1b -g sg-7bc1f21d -g sg-0ee1f53f1092ebd58 --associate-public-ip --run-list 'recipe[test_cookbook::default]' --sudo --node-ssl-verify-mode none
+
+
+
+config.rb
+
+current_dir = File.dirname(__FILE__)
+log_level :info
+log_location STDOUT
+node_name 'chefadmin'
+client_key "chefadmin.pem"
+validation_client_name 'test-org-validator'
+validation_key "test-org-validator.pem"
+chef_server_url 'https://ec2-15-xx-165-xxx.ap-south-1.compute.amazonaws.com/organizations/test-org'
+cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
+cookbook_path ["#{current_dir}/../cookbooks"]
+
+ssl_verify_mode :verify_none
+
+
+knife[:availability_zone] = "ap-south-1b"
+knife[:region] = "ap-south-1"
+knife[:image] = "ami-04bde106886a53080"
+knife[:flavor] = "t2.micro"
+
+knife[:aws_access_key_id] = ""
+knife[:aws_secret_access_key] = ""
+knife[:aws_ssh_key_id] = "chef-server"
+
